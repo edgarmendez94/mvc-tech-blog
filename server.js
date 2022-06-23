@@ -5,6 +5,7 @@ const routes = require('./controllers');
 
 
 const sequelize = require('./config/connection');
+const { Blog } = require('./models');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -15,8 +16,13 @@ app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
 
-app.get("/", (req,res) => {
-    res.render("homepage")
+app.get("/", async (req,res) => {
+    const allBlogs = await Blog.findAll()
+    const blogs = allBlogs.map((blog) => 
+    blog.get({plain:true}))
+    res.render("homepage",{
+        blogs
+    })
 })
 
 
